@@ -4,7 +4,8 @@
  */
 
 var express = require('express')
-  , routes = require('./routes');
+  , routes = require('./routes')
+  , fs = require('fs');
 
 var app = module.exports = express.createServer();
 
@@ -28,8 +29,64 @@ app.configure('production', function(){
 });
 
 // Routes
-
 app.get('/', routes.index);
 
+app.get('/form', function(req,res){
+	fs.readFile('./form/form.html', function (error, content) {
+		if(error){
+			res.writeHead(500);
+			res.end();
+		}
+		else {
+			res.writeHead(200, {'Content-type': 'text/html'});
+			res.end(content, 'utf-8');
+		}
+	  
+	});
+});
+
+app.post('/signup', function (req, res) {
+	var username = req.body.username;
+	var password = req.body.password;
+	User.addUser(username, password, function (err, user) {
+		if(err) throw err;
+		res.redirect('/form');
+	  
+	});
+});
+
+
+
 app.listen(3000);
+
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log("hello world");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
